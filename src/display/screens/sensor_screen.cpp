@@ -1,8 +1,9 @@
 #include <display/screens/sensor_screen.h>
 
 SensorsScreen::SensorsScreen(ST7789_AVR &display)
-    : BaseScreen(display), temperature(23.5), humidity(45.2), aqi(35.0)
+    : BaseScreen(display), temperature(23.5), humidity(45.2), aqi(35.0), sensorId("SENS_01")
 {
+    // Initialize with default sensor ID
 }
 
 void SensorsScreen::setData(float temp, float hum, float airQuality)
@@ -12,6 +13,11 @@ void SensorsScreen::setData(float temp, float hum, float airQuality)
     aqi = airQuality;
 }
 
+void SensorsScreen::setSensorId(String id)
+{
+    sensorId = id;
+}
+
 void SensorsScreen::draw()
 {
     // Title bar
@@ -19,7 +25,7 @@ void SensorsScreen::draw()
     tft.setTextColor(COLOR_TEXT);
     tft.setTextSize(2);
     tft.setCursor(50, 10);
-    tft.print("SENSOR DATA");
+    tft.print("ENV STATUS");
 
     // Temperature
     uint16_t tempColor = 0xF811; // Red-orange for temperature
@@ -33,7 +39,7 @@ void SensorsScreen::draw()
     tft.print(" C");
 
     // Draw temperature icon - adjusted position
-    drawTemperatureIcon(20, 60);
+    drawTemperatureIcon(20, 66);
 
     // Humidity
     uint16_t humColor = 0x0F5F; // Blue for humidity
@@ -62,13 +68,15 @@ void SensorsScreen::draw()
     // Draw AQI indicator
     drawAqiIndicator(20, 200, 80, 10);
 
-    // Draw update time
+    // Draw sensor ID instead of "Updated: Now"
     tft.setTextColor(COLOR_TEXT);
     tft.setTextSize(1);
     tft.setCursor(150, 220);
-    tft.print("Updated: Now");
+    tft.print("ID: ");
+    tft.print(sensorId);
 }
 
+// Rest of the methods remain unchanged
 void SensorsScreen::drawTemperatureIcon(int x, int y)
 {
     uint16_t tempColor = 0xF811;

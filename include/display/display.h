@@ -39,11 +39,16 @@ public:
     void setSuccessMessage(const char *msg);
     void setWarningMessage(const char *msg);
 
-    // Update sensor data
+    // Update sensor data and IDs
     void setSensorData(float temp, float humidity, float aqi);
+    void setSensorId(String id);
 
-    // Update device data
-    void setDeviceData(int ldr, bool motion, bool r1, bool r2, bool r3, bool r4);
+    // Update device data and settings
+    void setDeviceData(int ldr, bool motion,
+                       bool r1, bool r2, bool r3, bool r4, bool r5, bool r6);
+    void setLdrSensorId(String id);
+    void setMotionSensorId(String id);
+    void setRelayTypes(bool *heavyDutyFlags, int count);
 };
 
 #endif // DISPLAY_H

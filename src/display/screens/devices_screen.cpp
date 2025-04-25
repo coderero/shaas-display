@@ -3,18 +3,49 @@
 
 DevicesScreen::DevicesScreen(ST7789_AVR &display)
     : BaseScreen(display), ldrValue(780), motionDetected(false),
-      relay1(true), relay2(false), relay3(true), relay4(false)
+      ldrSensorId("LDR_01"), motionSensorId("MOT_01")
 {
+    // Initialize relay states
+    for (int i = 0; i < 6; i++)
+    {
+        relayStates[i] = false;
+        // Default: first 4 are 10A (false), last 2 are 30A (true)
+        heavyDutyRelays[i] = (i >= 4);
+    }
 }
 
-void DevicesScreen::setData(int ldr, bool motion, bool r1, bool r2, bool r3, bool r4)
+void DevicesScreen::setSensorData(int ldr, bool motion)
 {
     ldrValue = ldr;
     motionDetected = motion;
-    relay1 = r1;
-    relay2 = r2;
-    relay3 = r3;
-    relay4 = r4;
+}
+
+void DevicesScreen::setRelayStates(bool r1, bool r2, bool r3, bool r4, bool r5, bool r6)
+{
+    relayStates[0] = r1;
+    relayStates[1] = r2;
+    relayStates[2] = r3;
+    relayStates[3] = r4;
+    relayStates[4] = r5;
+    relayStates[5] = r6;
+}
+
+void DevicesScreen::setRelayTypes(bool *heavyDutyFlags, int count)
+{
+    for (int i = 0; i < min(count, 6); i++)
+    {
+        heavyDutyRelays[i] = heavyDutyFlags[i];
+    }
+}
+
+void DevicesScreen::setLdrSensorId(String id)
+{
+    ldrSensorId = id;
+}
+
+void DevicesScreen::setMotionSensorId(String id)
+{
+    motionSensorId = id;
 }
 
 void DevicesScreen::draw()
@@ -39,6 +70,13 @@ void DevicesScreen::draw()
     // Draw sun icon with proper alignment
     drawSunIcon(20, 50);
 
+    // Display LDR sensor ID
+    tft.setTextColor(COLOR_WARNING);
+    tft.setTextSize(1);
+    tft.setCursor(45, 70);
+    tft.print("ID: ");
+    tft.print(ldrSensorId);
+
     // Motion sensor
     tft.setTextColor(COLOR_INFO);
     tft.setTextSize(1);
@@ -51,34 +89,42 @@ void DevicesScreen::draw()
     // Draw motion icon with proper alignment
     drawMotionIcon(20, 100);
 
+    // Display motion sensor ID
+    tft.setTextColor(COLOR_INFO);
+    tft.setTextSize(1);
+    tft.setCursor(45, 120);
+    tft.print("ID: ");
+    tft.print(motionSensorId);
+
     // Relay states
     tft.setTextColor(COLOR_SUCCESS);
     tft.setTextSize(1);
     tft.setCursor(20, 150);
     tft.print("Relay States:");
 
-    // Draw relay indicators
-    drawRelayStatus(40, 170, relay1);
-    drawRelayStatus(80, 170, relay2);
-    drawRelayStatus(120, 170, relay3);
-    drawRelayStatus(160, 170, relay4);
+    // Draw standard relay indicators (10A) - first 4
+    for (int i = 0; i < 4; i++)
+    {
+        if (!heavyDutyRelays[i])
+        {
+            drawRelayStatus(30 + (i * 40), 170, relayStates[i], false);
+            tft.setCursor(30 + (i * 40) + 5, 190);
+            tft.print("10A");
+        }
+    }
 
-    // Labels
-    tft.setTextSize(1);
-    tft.setCursor(38, 190);
-    tft.print("R1");
-    tft.setCursor(78, 190);
-    tft.print("R2");
-    tft.setCursor(118, 190);
-    tft.print("R3");
-    tft.setCursor(158, 190);
-    tft.print("R4");
-
-    // Draw update time
-    tft.setTextColor(COLOR_TEXT);
-    tft.setTextSize(1);
-    tft.setCursor(150, 220);
-    tft.print("Updated: Now");
+    // Draw heavy duty relay indicators (30A) - last 2
+    int heavyDutyCount = 0;
+    for (int i = 0; i < 6; i++)
+    {
+        if (heavyDutyRelays[i])
+        {
+            drawRelayStatus(30 + (heavyDutyCount * 40), 210, relayStates[i], true);
+            tft.setCursor(30 + (heavyDutyCount * 40) + 5, 190);
+            tft.print("30A");
+            heavyDutyCount++;
+        }
+    }
 }
 
 void DevicesScreen::drawSunIcon(int x, int y)
@@ -116,9 +162,20 @@ void DevicesScreen::drawMotionIcon(int x, int y)
     }
 }
 
-void DevicesScreen::drawRelayStatus(int x, int y, bool state)
+void DevicesScreen::drawRelayStatus(int x, int y, bool state, bool isHeavyDuty)
 {
-    uint16_t color = state ? COLOR_SUCCESS : COLOR_ERROR;
-    tft.fillRoundRect(x, y, 20, 15, 3, color);
-    tft.drawRoundRect(x, y, 20, 15, 3, COLOR_TEXT);
+    uint16_t fillColor = state ? COLOR_SUCCESS : COLOR_ERROR;
+
+    // Make heavy duty relays larger
+    int width = isHeavyDuty ? 30 : 20;
+    int height = isHeavyDuty ? 18 : 15;
+
+    tft.fillRoundRect(x, y, width, height, 3, fillColor);
+    tft.drawRoundRect(x, y, width, height, 3, COLOR_TEXT);
+
+    // Add indicator for heavy duty
+    if (isHeavyDuty)
+    {
+        tft.drawLine(x + 5, y + height - 5, x + width - 5, y + height - 5, COLOR_TEXT);
+    }
 }

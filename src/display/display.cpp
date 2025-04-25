@@ -154,12 +154,37 @@ void Display::setSensorData(float temp, float humidity, float aqi)
     }
 }
 
-void Display::setDeviceData(int ldr, bool motion, bool r1, bool r2, bool r3, bool r4)
+// Set environmental sensor ID
+void Display::setSensorId(String id)
 {
-    devicesScreen.setData(ldr, motion, r1, r2, r3, r4);
-    if (currentMode == MODE_DEVICES)
-    {
-        tft.fillScreen(COLOR_BG);
-        devicesScreen.draw();
-    }
+    sensorsScreen.setSensorId(id);
+}
+
+// Update device data with 6 relays
+void Display::setDeviceData(int ldr, bool motion,
+                            bool r1, bool r2, bool r3, bool r4, bool r5, bool r6)
+{
+    // Update sensor data
+    devicesScreen.setSensorData(ldr, motion);
+
+    // Update relay states
+    devicesScreen.setRelayStates(r1, r2, r3, r4, r5, r6);
+}
+
+// Set LDR sensor ID
+void Display::setLdrSensorId(String id)
+{
+    devicesScreen.setLdrSensorId(id);
+}
+
+// Set motion sensor ID
+void Display::setMotionSensorId(String id)
+{
+    devicesScreen.setMotionSensorId(id);
+}
+
+// Set relay types
+void Display::setRelayTypes(bool *heavyDutyFlags, int count)
+{
+    devicesScreen.setRelayTypes(heavyDutyFlags, count);
 }

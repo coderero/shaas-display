@@ -20,10 +20,17 @@ float humidity = 45.2;
 float aqi = 35.0;
 int ldrValue = 780;
 bool motionDetected = false;
-bool relay1 = true;
-bool relay2 = false;
-bool relay3 = true;
-bool relay4 = false;
+
+// Environmental sensor ID
+String envSensorId = "ENV_S01";
+
+// Device sensor IDs
+String ldrSensorId = "LDR_A42";
+String motionSensorId = "MOT_B18";
+
+// Expanded relay configuration (6 relays total)
+bool relayStates[6] = {true, false, true, false, true, false};
+bool heavyDutyRelays[6] = {false, false, false, false, true, true}; // Last 2 are 30A
 
 // Forward declarations
 void updateSensorData();
@@ -40,13 +47,23 @@ void setup()
   // Initialize display
   display.init();
 
-  // Set initial data
+  // Set initial notification messages
   display.setErrorMessage("System Error: WiFi connection lost");
   display.setInfoMessage("System Info: Data uploaded to cloud");
   display.setSuccessMessage("Success: System configuration updated");
   display.setWarningMessage("Warning: Battery level low");
+
+  // Set environmental sensor data with ID
   display.setSensorData(temperature, humidity, aqi);
-  display.setDeviceData(ldrValue, motionDetected, relay1, relay2, relay3, relay4);
+  display.setSensorId(envSensorId);
+
+  // Set device data including sensor IDs
+  display.setDeviceData(ldrValue, motionDetected,
+                        relayStates[0], relayStates[1], relayStates[2],
+                        relayStates[3], relayStates[4], relayStates[5]);
+  display.setLdrSensorId(ldrSensorId);
+  display.setMotionSensorId(motionSensorId);
+  display.setRelayTypes(heavyDutyRelays, 6);
 }
 
 void loop()
@@ -92,25 +109,36 @@ void updateSensorData()
         if (random(100) < 5)
         {
           // Toggle random relay
-          int relay = random(4);
-          switch (relay)
-          {
-          case 0:
-            relay1 = !relay1;
-            break;
-          case 1:
-            relay2 = !relay2;
-            break;
-          case 2:
-            relay3 = !relay3;
-            break;
-          case 3:
-            relay4 = !relay4;
-            break;
-          }
+          int relay = random(6); // Updated to handle 6 relays
+          relayStates[relay] = !relayStates[relay];
         }
 
-        display.setDeviceData(ldrValue, motionDetected, relay1, relay2, relay3, relay4);
+        // Update device data with all 6 relay states
+        display.setDeviceData(ldrValue, motionDetected,
+                              relayStates[0], relayStates[1], relayStates[2],
+                              relayStates[3], relayStates[4], relayStates[5]);
+      }
+
+      // Occasionally update sensor IDs (for demo purposes)
+      if (random(100) < 2)
+      {
+        // Generate new random sensor IDs
+        char envBuffer[10];
+        sprintf(envBuffer, "ENV_%03d", (int)random(1, 100));
+        envSensorId = String(envBuffer);
+
+        char ldrBuffer[10];
+        sprintf(ldrBuffer, "LDR_%03d", (int)random(1, 100));
+        ldrSensorId = String(ldrBuffer);
+
+        char motBuffer[10];
+        sprintf(motBuffer, "MOT_%03d", (int)random(1, 100));
+        motionSensorId = String(motBuffer);
+
+        // Update sensor IDs
+        display.setSensorId(envSensorId);
+        display.setLdrSensorId(ldrSensorId);
+        display.setMotionSensorId(motionSensorId);
       }
     }
 

@@ -9,6 +9,7 @@ private:
     float temperature;
     float humidity;
     float aqi;
+    String sensorId; // Add sensor ID field
 
     void drawTemperatureIcon(int x, int y);
     void drawHumidityIcon(int x, int y);
@@ -17,7 +18,8 @@ private:
 public:
     SensorsScreen(ST7789_AVR &tft);
 
-    void setData(float temp, float humidity, float airQuality);
+    void setData(float temp, float hum, float airQuality);
+    void setSensorId(String id); // Setter for sensor ID
     void draw() override;
 };
 

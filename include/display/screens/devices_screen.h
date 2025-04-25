@@ -8,19 +8,35 @@ class DevicesScreen : public BaseScreen
 private:
     int ldrValue;
     bool motionDetected;
-    bool relay1;
-    bool relay2;
-    bool relay3;
-    bool relay4;
+
+    // Relay states
+    bool relayStates[6];     // Increased to 6 relays total
+    bool heavyDutyRelays[6]; // Track which relays are heavy duty (30A)
+
+    // Sensor IDs
+    String ldrSensorId;
+    String motionSensorId;
 
     void drawSunIcon(int x, int y);
     void drawMotionIcon(int x, int y);
-    void drawRelayStatus(int x, int y, bool state);
+    void drawRelayStatus(int x, int y, bool state, bool isHeavyDuty);
 
 public:
     DevicesScreen(ST7789_AVR &tft);
 
-    void setData(int ldr, bool motion, bool r1, bool r2, bool r3, bool r4);
+    // Updated to include 6 relays
+    void setRelayStates(bool r1, bool r2, bool r3, bool r4, bool r5, bool r6);
+
+    // Set relay types (which ones are heavy duty 30A)
+    void setRelayTypes(bool *heavyDutyFlags, int count);
+
+    // Set sensor data
+    void setSensorData(int ldr, bool motion);
+
+    // Set sensor IDs
+    void setLdrSensorId(String id);
+    void setMotionSensorId(String id);
+
     void draw() override;
 };
 
