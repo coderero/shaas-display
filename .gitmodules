@@ -1,0 +1,3 @@
+[submodule "lib/RREFont"]
+	path = lib/RREFont
+	url = https://github.com/cbm80amiga/RREFont.git
