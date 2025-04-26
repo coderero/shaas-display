@@ -14,8 +14,8 @@ private:
     bool heavyDutyRelays[6]; // Track which relays are heavy duty (30A)
 
     // Sensor IDs
-    String ldrSensorId;
-    String motionSensorId;
+    int ldrSensorId;
+    int motionSensorId;
 
     void drawSunIcon(int x, int y);
     void drawMotionIcon(int x, int y);
@@ -34,8 +34,8 @@ public:
     void setSensorData(int ldr, bool motion);
 
     // Set sensor IDs
-    void setLdrSensorId(String id);
-    void setMotionSensorId(String id);
+    void setLdrSensorId(int id);
+    void setMotionSensorId(int id);
 
     void draw() override;
 };

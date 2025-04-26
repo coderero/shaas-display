@@ -155,7 +155,7 @@ void Display::setSensorData(float temp, float humidity, float aqi)
 }
 
 // Set environmental sensor ID
-void Display::setSensorId(String id)
+void Display::setSensorId(int id)
 {
     sensorsScreen.setSensorId(id);
 }
@@ -172,13 +172,13 @@ void Display::setDeviceData(int ldr, bool motion,
 }
 
 // Set LDR sensor ID
-void Display::setLdrSensorId(String id)
+void Display::setLdrSensorId(int id)
 {
     devicesScreen.setLdrSensorId(id);
 }
 
 // Set motion sensor ID
-void Display::setMotionSensorId(String id)
+void Display::setMotionSensorId(int id)
 {
     devicesScreen.setMotionSensorId(id);
 }

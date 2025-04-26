@@ -41,13 +41,13 @@ public:
 
     // Update sensor data and IDs
     void setSensorData(float temp, float humidity, float aqi);
-    void setSensorId(String id);
+    void setSensorId(int id);
 
     // Update device data and settings
     void setDeviceData(int ldr, bool motion,
                        bool r1, bool r2, bool r3, bool r4, bool r5, bool r6);
-    void setLdrSensorId(String id);
-    void setMotionSensorId(String id);
+    void setLdrSensorId(int id);
+    void setMotionSensorId(int id);
     void setRelayTypes(bool *heavyDutyFlags, int count);
 };
 

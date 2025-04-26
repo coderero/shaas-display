@@ -22,11 +22,11 @@ int ldrValue = 780;
 bool motionDetected = false;
 
 // Environmental sensor ID
-String envSensorId = "ENV_S01";
+int envSensorId = 1; // Changed from String to int
 
 // Device sensor IDs
-String ldrSensorId = "LDR_A42";
-String motionSensorId = "MOT_B18";
+int ldrSensorId = 42;    // Changed from String to int
+int motionSensorId = 18; // Changed from String to int
 
 // Expanded relay configuration (6 relays total)
 bool relayStates[6] = {true, false, true, false, true, false};
@@ -122,18 +122,10 @@ void updateSensorData()
       // Occasionally update sensor IDs (for demo purposes)
       if (random(100) < 2)
       {
-        // Generate new random sensor IDs
-        char envBuffer[10];
-        sprintf(envBuffer, "ENV_%03d", (int)random(1, 100));
-        envSensorId = String(envBuffer);
-
-        char ldrBuffer[10];
-        sprintf(ldrBuffer, "LDR_%03d", (int)random(1, 100));
-        ldrSensorId = String(ldrBuffer);
-
-        char motBuffer[10];
-        sprintf(motBuffer, "MOT_%03d", (int)random(1, 100));
-        motionSensorId = String(motBuffer);
+        // Generate new random sensor IDs (now as integers)
+        envSensorId = random(1, 100);
+        ldrSensorId = random(1, 100);
+        motionSensorId = random(1, 100);
 
         // Update sensor IDs
         display.setSensorId(envSensorId);

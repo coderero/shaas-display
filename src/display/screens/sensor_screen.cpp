@@ -1,7 +1,7 @@
 #include <display/screens/sensor_screen.h>
 
 SensorsScreen::SensorsScreen(ST7789_AVR &display)
-    : BaseScreen(display), temperature(23.5), humidity(45.2), aqi(35.0), sensorId("SENS_01")
+    : BaseScreen(display), temperature(23.5), humidity(45.2), aqi(35.0), sensorId(1) // Changed from String to int
 {
     // Initialize with default sensor ID
 }
@@ -13,9 +13,9 @@ void SensorsScreen::setData(float temp, float hum, float airQuality)
     aqi = airQuality;
 }
 
-void SensorsScreen::setSensorId(String id)
+void SensorsScreen::setSensorId(int id)
 {
-    sensorId = id;
+    sensorId = id; // Changed from String to int
 }
 
 void SensorsScreen::draw()

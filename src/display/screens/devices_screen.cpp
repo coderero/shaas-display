@@ -3,7 +3,7 @@
 
 DevicesScreen::DevicesScreen(ST7789_AVR &display)
     : BaseScreen(display), ldrValue(780), motionDetected(false),
-      ldrSensorId("LDR_01"), motionSensorId("MOT_01")
+      ldrSensorId(42), motionSensorId(18) // Changed from String to int
 {
     // Initialize relay states
     for (int i = 0; i < 6; i++)
@@ -38,12 +38,12 @@ void DevicesScreen::setRelayTypes(bool *heavyDutyFlags, int count)
     }
 }
 
-void DevicesScreen::setLdrSensorId(String id)
+void DevicesScreen::setLdrSensorId(int id)
 {
     ldrSensorId = id;
 }
 
-void DevicesScreen::setMotionSensorId(String id)
+void DevicesScreen::setMotionSensorId(int id)
 {
     motionSensorId = id;
 }
@@ -119,8 +119,8 @@ void DevicesScreen::draw()
     {
         if (heavyDutyRelays[i])
         {
-            drawRelayStatus(30 + (heavyDutyCount * 40), 210, relayStates[i], true);
-            tft.setCursor(30 + (heavyDutyCount * 40) + 5, 190);
+            drawRelayStatus(30 + (heavyDutyCount * 40), 205, relayStates[i], true);
+            tft.setCursor(30 + (heavyDutyCount * 40) + 5, 225);
             tft.print("30A");
             heavyDutyCount++;
         }
